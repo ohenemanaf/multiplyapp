@@ -1,9 +1,25 @@
 import { useEffect } from 'react';
-import { Lock, Shuffle, Timer, Volume2, VolumeX } from 'lucide-react';
+import { ChevronRight, Lock, Shuffle, Timer, Volume2, VolumeX } from 'lucide-react';
 import { TABLES, isUnlocked, trickyFacts } from '../lib/game';
 import { currentPlayer, setSound, signOut, totalStars, useStore } from '../lib/players';
-import { Stars, TopBar } from '../components/kit';
+import { Avatar, Card, IconButton, Stars, TONES, iconProps, toneFor } from '../components/kit';
 import { go } from '../lib/route';
+
+function ModeRow({ icon: Icon, tone, title, detail, onClick }) {
+    const t = TONES[tone];
+    return (
+        <button onClick={onClick} className="key flex w-full items-center gap-4 rounded-[20px] border border-rule bg-card p-4 text-left">
+            <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${t.wash} ${t.ink}`}>
+                <Icon size={24} {...iconProps} />
+            </span>
+            <span className="min-w-0 flex-1">
+                <span className="block text-[17px] font-semibold">{title}</span>
+                <span className="block text-[14px] text-pencil">{detail}</span>
+            </span>
+            <ChevronRight size={20} {...iconProps} className="text-faint" />
+        </button>
+    );
+}
 
 export default function Home() {
     const store = useStore();
@@ -12,81 +28,92 @@ export default function Home() {
         if (!player) go('players');
     }, [player]);
     if (!player) return null;
+
+    const stars = totalStars(player);
     const tricky = trickyFacts(player.stats).length;
+    const nextLocked = TABLES.find((t) => !isUnlocked(t, player.stars));
 
     return (
         <>
-            <TopBar
-                title={
-                    <span className="flex items-center gap-2">
-                        <span className="text-[30px] leading-none">{player.avatar}</span> Hi, {player.name}!
-                    </span>
-                }
-                right={
-                    <div className="flex gap-2">
-                        <button
-                            aria-label={store.sound ? 'Sound off' : 'Sound on'}
-                            onClick={() => setSound(!store.sound)}
-                            className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-muted shadow-sm"
-                        >
-                            {store.sound ? <Volume2 size={20} /> : <VolumeX size={20} />}
-                        </button>
-                        <button
-                            onClick={() => {
-                                signOut();
-                                go('players');
-                            }}
-                            className="h-11 rounded-2xl bg-white px-3 text-[14px] font-bold text-muted shadow-sm"
-                        >
-                            Switch
-                        </button>
-                    </div>
-                }
-            />
+            <header className="mb-5 flex items-center gap-3">
+                <Avatar id={player.avatar} size={48} />
+                <div className="min-w-0 flex-1">
+                    <h1 className="truncate text-[21px] font-semibold leading-tight tracking-tight">{player.name}</h1>
+                </div>
+                <IconButton label={store.sound ? 'Turn sound off' : 'Turn sound on'} onClick={() => setSound(!store.sound)} className="border border-rule">
+                    {store.sound ? <Volume2 size={20} {...iconProps} /> : <VolumeX size={20} {...iconProps} className="text-faint" />}
+                </IconButton>
+                <button
+                    onClick={() => {
+                        signOut();
+                        go('players');
+                    }}
+                    className="key h-11 rounded-2xl border border-rule bg-card px-3.5 text-[14px] font-medium"
+                >
+                    Switch
+                </button>
+            </header>
 
-            <div className="mb-4 flex items-center justify-between rounded-3xl bg-white px-5 py-3 shadow-sm">
-                <span className="text-[16px] font-bold text-muted">Your stars</span>
-                <span className="text-[22px] font-extrabold">⭐ {totalStars(player)} <span className="text-[15px] text-muted">/ 36</span></span>
-            </div>
+            <Card className="mb-6 p-4">
+                <div className="flex items-baseline justify-between">
+                    <p className="text-[15px] font-medium">Star collection</p>
+                    <p className="text-[15px] text-pencil">
+                        <span className="text-[22px] font-semibold text-ink">{stars}</span> of 36
+                    </p>
+                </div>
+                <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-paper" role="progressbar" aria-valuenow={stars} aria-valuemin={0} aria-valuemax={36} aria-label="Stars collected">
+                    <div className="h-full rounded-full bg-sun transition-[width] duration-500" style={{ width: `${(stars / 36) * 100}%` }} />
+                </div>
+                {nextLocked && (
+                    <p className="mt-2.5 text-[13px] text-pencil">Earn a star on the {nextLocked - 1} times table to open {nextLocked}.</p>
+                )}
+            </Card>
 
-            <h2 className="mb-2 px-1 text-[16px] font-extrabold text-muted">Times tables</h2>
-            <div className="mb-5 grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+            <h2 className="mb-3 text-[17px] font-semibold">Times tables</h2>
+            <div className="mb-7 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
                 {TABLES.map((t) => {
                     const open = isUnlocked(t, player.stars);
+                    const tone = toneFor(t);
+                    const got = player.stars[t] || 0;
                     return (
                         <button
                             key={t}
                             disabled={!open}
                             onClick={() => go(`play/table/${t}`)}
-                            aria-label={open ? `${t} times table, ${player.stars[t] || 0} stars` : `${t} times table, locked`}
-                            className={`flex flex-col items-center rounded-3xl py-3 transition-transform ${
-                                open ? 'bg-white shadow-[0_4px_0_#c9d6ea] active:translate-y-1 active:shadow-none' : 'bg-line/40 text-muted'
+                            aria-label={open ? `${t} times table, ${got} stars` : `${t} times table, locked`}
+                            className={`relative flex flex-col items-center rounded-[var(--radius-tile)] pb-3 pt-4 ${
+                                open ? 'key border border-rule bg-card' : 'border border-dashed border-rule bg-paper/70'
                             }`}
                         >
-                            <span className="text-[13px] font-bold text-muted">×</span>
-                            <span className="text-[32px] font-extrabold leading-none">{t}</span>
-                            <span className="mt-1.5 h-[18px]">{open ? <Stars count={player.stars[t] || 0} size={16} /> : <Lock size={16} />}</span>
+                            <span
+                                className={`grid h-12 w-12 place-items-center rounded-2xl text-[26px] font-semibold ${open ? `${tone.wash} ${tone.ink}` : 'text-faint'}`}
+                            >
+                                {t}
+                            </span>
+                            <span className="mt-2.5 flex h-[18px] items-center">
+                                {open ? <Stars count={got} size={16} /> : <Lock size={16} {...iconProps} className="text-faint" />}
+                            </span>
                         </button>
                     );
                 })}
             </div>
-            <p className="-mt-3 mb-5 px-1 text-[13px] font-semibold text-muted">Get 1 star to open the next table.</p>
 
-            <div className="grid gap-2.5 sm:grid-cols-2">
-                <button onClick={() => go('play/mixed')} className="flex items-center gap-3 rounded-3xl bg-white p-4 text-left shadow-[0_4px_0_#c9d6ea] active:translate-y-1 active:shadow-none">
-                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-soft text-brand"><Shuffle size={24} /></span>
-                    <span>
-                        <span className="block text-[18px] font-extrabold">Mixed practice</span>
-                        <span className="block text-[14px] font-semibold text-muted">{tricky ? `Extra turns on ${tricky} tricky fact${tricky === 1 ? '' : 's'}` : 'All your open tables'}</span>
-                    </span>
-                </button>
-                <button onClick={() => go('speed')} className="flex items-center gap-3 rounded-3xl bg-white p-4 text-left shadow-[0_4px_0_#c9d6ea] active:translate-y-1 active:shadow-none">
-                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-oops-soft text-oops"><Timer size={24} /></span>
-                    <span>
-                        <span className="block text-[18px] font-extrabold">Speed challenge</span>
-                        <span className="block text-[14px] font-semibold text-muted">60 seconds · best {player.speedBest}</span>
-                    </span>
-                </button>
+            <h2 className="mb-3 text-[17px] font-semibold">More ways to play</h2>
+            <div className="grid gap-3 md:grid-cols-2">
+                <ModeRow
+                    icon={Shuffle}
+                    tone="plum"
+                    title="Mixed practice"
+                    detail={tricky ? `Extra turns on your ${tricky} tricky ${tricky === 1 ? 'fact' : 'facts'}` : 'Questions from all your open tables'}
+                    onClick={() => go('play/mixed')}
+                />
+                <ModeRow
+                    icon={Timer}
+                    tone="coral"
+                    title="Speed challenge"
+                    detail={player.speedBest ? `60 seconds. Your best is ${player.speedBest}` : 'How many can you get in 60 seconds?'}
+                    onClick={() => go('speed')}
+                />
             </div>
         </>
     );

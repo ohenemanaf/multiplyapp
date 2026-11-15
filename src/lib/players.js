@@ -3,7 +3,8 @@
 import { useSyncExternalStore } from 'react';
 
 const KEY = 'multiply:v2';
-export const AVATARS = ['🦁', '🐘', '🦒', '🐢', '🦊', '🐼', '🐸', '🦉', '🐬', '🦋', '🐝', '🐙'];
+// Animal ids; the icons and colours live in components/kit.jsx (ANIMALS).
+export const AVATARS = ['cat', 'dog', 'bird', 'fish', 'rabbit', 'squirrel', 'turtle', 'snail', 'bug', 'panda', 'shrimp', 'crane'];
 const MAX_SESSIONS = 100;
 
 const empty = { players: [], currentId: null, sound: true };

@@ -14,13 +14,31 @@
 
 </div>
 
-| Choose a table | Answer | Learn from mistakes | Grown-up view |
-|---|---|---|---|
-| ![Home](docs/screenshots/home.png) | ![Question](docs/screenshots/question.png) | ![Wrong answer](docs/screenshots/wrong.png) | ![Grown-ups](docs/screenshots/grownups.png) |
+| Choose a table | Marked right | Corrected | Results | Grown-up view |
+|---|---|---|---|---|
+| ![Home](docs/screenshots/home.png) | ![Right answer](docs/screenshots/question.png) | ![Wrong answer](docs/screenshots/wrong.png) | ![Results](docs/screenshots/results.png) | ![Grown-ups](docs/screenshots/grownups.png) |
+
+## Design
+
+The whole app is built around a **squared maths exercise book being marked by the teacher**:
+
+- Every question is written on squared paper with a red margin line.
+- A right answer gets a green tick **stamped** beside it.
+- A wrong answer gets a pen stroke through it, with the correction written underneath.
+
+**Typeface:** [Lexend](https://www.lexend.com/), which was designed to make text easier to read for young and struggling readers. Its numbers stay clear at large sizes.
+
+**Icons:** all icons are sharp vector [Lucide](https://lucide.dev) icons at a single stroke weight, with no emoji. That includes the twelve animal avatars and the result medals.
+
+**Colour:** six "coloured pencil" colours (cobalt, leaf, coral, plum, teal and sun), each with a pale wash. Each times table keeps the same colour everywhere it appears.
+
+**Screen sizes:** phones get one column. On tablets, the home screen spreads out while the game stays a comfortable phone-width page.
+
+![Tablet layout](docs/screenshots/tablet.png)
 
 ## How it works
 
-- **Players:** each child picks a name and an animal. There are no passwords, so siblings or a class can share one tablet.
+- **Players:** each child picks a name and an animal (from 12 illustrated animal icons). There are no passwords, so siblings or a class can share one tablet.
 - **Times tables 1–12:** each round is 10 questions from one table.
   - 10 right first time earns ★★★, 8 or more earns ★★, and 6 or more earns ★.
   - One star unlocks the next table. Tables 1 and 2 are open from the start.
@@ -47,7 +65,7 @@ v1 was a 55-line quiz. It:
 
 ## Tech
 
-- React 19, Vite 8 and Tailwind CSS 4, using the Nunito font (bundled, so it works offline)
+- React 19, Vite 8 and Tailwind CSS 4, with the Lexend font and Lucide icons bundled, so it works offline
 - The game rules are plain functions with injected randomness (`src/lib/game.js`), which keeps them fully unit-tested
 - Progress is saved in `localStorage` on the device. No accounts, and no data leaves the device.
 - A service worker precaches the app, so it works with no internet after the first visit.

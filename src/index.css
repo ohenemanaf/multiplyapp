@@ -1,19 +1,33 @@
 @import 'tailwindcss';
 
+/* Multiply design system: a squared maths exercise book, marked by the teacher.
+   Lexend was designed to improve reading fluency, which suits young readers. */
 @theme {
-  --font-sans: 'Nunito Variable', ui-rounded, system-ui, sans-serif;
+  --font-sans: 'Lexend Variable', system-ui, sans-serif;
 
-  --color-sky: #eaf4ff;
-  --color-ink: #1f2a44;
-  --color-muted: #5b6785;
-  --color-line: #d8e3f3;
-  --color-brand: #3b5bdb;
-  --color-brand-soft: #e3e9ff;
-  --color-good: #1f9d55;
-  --color-good-soft: #dcf5e6;
-  --color-oops: #c2410c;
-  --color-oops-soft: #ffedd5;
-  --color-star: #f5b301;
+  --color-paper: #f5f7fb;
+  --color-grid: #e3eaf6;
+  --color-card: #ffffff;
+  --color-ink: #18213d;
+  --color-pencil: #5a6582;   /* secondary text */
+  --color-faint: #9aa4bd;
+  --color-rule: #dbe3f0;
+  --color-cobalt: #2e46c7;
+  --color-cobalt-deep: #2236a3;
+  --color-cobalt-wash: #e6eafc;
+  --color-leaf: #139a62;
+  --color-leaf-deep: #0e7a4d;
+  --color-leaf-wash: #dff4ea;
+  --color-coral: #e8553a;
+  --color-coral-wash: #fdeae5;
+  --color-sun: #f7b500;
+  --color-sun-wash: #fff4d1;
+  --color-plum: #7a4cc2;
+  --color-plum-wash: #efe7fb;
+  --color-teal: #0f8fa0;
+  --color-teal-wash: #def3f6;
+
+  --radius-tile: 20px;
 }
 
 @layer base {
@@ -22,9 +36,16 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    background: var(--color-sky);
+    background-color: var(--color-paper);
+    /* Squared maths-book paper */
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -1px -1px;
     color: var(--color-ink);
     font-family: var(--font-sans);
+    font-feature-settings: 'tnum' 1;
     overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
     user-select: none;
@@ -37,26 +58,59 @@
     touch-action: manipulation;
   }
   :focus-visible {
-    outline: 3px solid var(--color-brand);
-    outline-offset: 2px;
+    outline: 3px solid var(--color-cobalt);
+    outline-offset: 3px;
   }
 }
 
-@keyframes pop {
-  0% { transform: scale(0.6); opacity: 0; }
-  60% { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(1); }
+/* Raised "key" surfaces: a solid bottom edge that presses down on tap. */
+@utility key {
+  box-shadow: 0 3px 0 var(--edge, var(--color-rule));
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+  &:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 var(--edge, var(--color-rule));
+  }
 }
-.pop {
-  animation: pop 0.45s cubic-bezier(0.32, 0.72, 0, 1) both;
+
+/* The teacher's tick: stamped onto the page. */
+@keyframes stamp {
+  0% { transform: scale(1.8) rotate(-14deg); opacity: 0; }
+  55% { transform: scale(0.92) rotate(-8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-8deg); opacity: 1; }
 }
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
+.stamp {
+  animation: stamp 0.38s cubic-bezier(0.32, 0.72, 0, 1) both;
 }
-.shake {
-  animation: shake 0.3s ease-in-out;
+
+/* A pen stroke drawn through a wrong answer. */
+@keyframes strike {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.strike {
+  position: relative;
+}
+.strike::after {
+  content: '';
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: 52%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-coral);
+  transform-origin: left center;
+  transform: rotate(-6deg);
+  animation: strike 0.28s ease-out both;
+}
+
+@keyframes rise {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.rise {
+  animation: rise 0.35s cubic-bezier(0.32, 0.72, 0, 1) both;
 }
 
 .pb-safe {

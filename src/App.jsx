@@ -8,7 +8,7 @@ import { useRoute } from './lib/route';
 export default function App() {
     const [screen, ...rest] = useRoute();
     return (
-        <main className="mx-auto w-full max-w-lg px-4 pt-[max(env(safe-area-inset-top),12px)] pb-6">
+        <main className="mx-auto w-full max-w-lg px-4 pb-6 md:max-w-3xl md:px-8 pt-[max(env(safe-area-inset-top),16px)]">
             {screen === 'home' && <Home />}
             {screen === 'play' && <Play key={rest.join('/')} mode={rest[0] === 'mixed' ? 'mixed' : 'table'} table={rest[1]} />}
             {screen === 'speed' && <Speed />}
