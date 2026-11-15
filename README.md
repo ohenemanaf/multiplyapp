@@ -7,6 +7,8 @@
 **Times-tables practice for children: tables 1 to 12 with stars, mixed review and a speed challenge. Works offline.**
 
 [![CI](https://github.com/ohenemanaf/multiplyapp/actions/workflows/ci.yml/badge.svg)](https://github.com/ohenemanaf/multiplyapp/actions/workflows/ci.yml)
+
+**[Play it: ohenemanaf.github.io/multiplyapp](https://ohenemanaf.github.io/multiplyapp/)**
 ![React](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-offline-3b5bdb)
@@ -79,10 +81,9 @@ npm run build      # static site in dist/
 
 ## Deploying
 
-It's a static site that uses relative paths, so it works at a domain root or in a sub-folder.
+It deploys automatically. Every push to `main` runs the tests, builds the app and publishes `dist/` to the `gh-pages` branch (see `.github/workflows/deploy.yml`), which GitHub Pages serves at https://ohenemanaf.github.io/multiplyapp/.
 
-- **Vercel / Netlify:** import the repository.
-- **GitHub Pages:** in Settings → Pages, publish the `dist/` folder from a workflow or branch. It will run at `/multiplyapp/`.
+The app uses relative paths, so the same build also works at a domain root (Vercel or Netlify).
 
 ## License
 
