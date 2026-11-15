@@ -1,20 +1,75 @@
-# ✖️ MultiplyApp
-A fun, interactive multiplication tool designed specifically for students in **Grades 3 and 4**.
+<div align="center">
 
-## 🌟 Features
-* **Kid-Friendly Interface:** Large text and simple layouts for easy navigation.
-* **Instant Feedback:** Helps students learn multiplication tables through interactive practice.
-* **Lightweight:** Built with pure HTML, CSS, and JavaScript—no heavy downloads required.
+<img src="public/icon.svg" width="72" alt="Multiply app icon">
 
-## 🚀 How to Use
-1. Clone this repository or download the ZIP file.
-2. Open the `index.html` file in any modern web browser (Chrome, Firefox, Safari).
-3. Start practicing your multiplication!
+# Multiply
 
-## 🛠️ Built With
-* **HTML5:** For the structure of the math problems.
-* **CSS3:** For the colorful, kid-friendly styling.
-* **JavaScript:** To handle the multiplication logic and score tracking.
+**Times-tables practice for children: tables 1 to 12 with stars, mixed review and a speed challenge. Works offline.**
 
----
-*Created with ❤️ to help kids master their math tables.*
+[![CI](https://github.com/ohenemanaf/multiplyapp/actions/workflows/ci.yml/badge.svg)](https://github.com/ohenemanaf/multiplyapp/actions/workflows/ci.yml)
+![React](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-offline-3b5bdb)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+</div>
+
+| Choose a table | Answer | Learn from mistakes | Grown-up view |
+|---|---|---|---|
+| ![Home](docs/screenshots/home.png) | ![Question](docs/screenshots/question.png) | ![Wrong answer](docs/screenshots/wrong.png) | ![Grown-ups](docs/screenshots/grownups.png) |
+
+## How it works
+
+- **Players:** each child picks a name and an animal. There are no passwords, so siblings or a class can share one tablet.
+- **Times tables 1–12:** each round is 10 questions from one table.
+  - 10 right first time earns ★★★, 8 or more earns ★★, and 6 or more earns ★.
+  - One star unlocks the next table. Tables 1 and 2 are open from the start.
+- **Learning from mistakes:** a wrong answer is crossed out, the correct fact is shown clearly, and that question comes back at the end of the round for another try.
+- **Mixed practice:** 10 questions from every open table, chosen more often from the facts that child gets wrong.
+- **Speed challenge:** as many answers as possible in 60 seconds, with a personal best. A wrong answer flashes the correct one and costs no points.
+- **For grown-ups:** opened by **pressing and holding**, so children don't wander in. It shows each child's stars, accuracy per table, time practised, the facts they miss most, and options to reset progress or remove a player.
+
+**Designed for children aged about 6–10:**
+- Big number pad, with keyboard support (digits, Backspace, Enter) on computers
+- Gentle sounds generated in the browser, so there are no audio files, plus vibration on phones
+- Encouraging messages with no red error buzzer
+- Animations respect the device's "reduce motion" setting
+
+## What changed from v1
+
+v1 was a 55-line quiz. It:
+
+- reloaded the page after every answer
+- showed *"Your score is below 0. Don't give up"* every time a new child opened it
+- displayed a count as a percentage
+- never showed the correct answer
+- asked random questions from 1×1 to 12×12 with no way to practise a single table
+
+## Tech
+
+- React 19, Vite 8 and Tailwind CSS 4, using the Nunito font (bundled, so it works offline)
+- The game rules are plain functions with injected randomness (`src/lib/game.js`), which keeps them fully unit-tested
+- Progress is saved in `localStorage` on the device. No accounts, and no data leaves the device.
+- A service worker precaches the app, so it works with no internet after the first visit.
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm test           # 17 tests: rounds, stars, unlocking, weak-fact weighting, speed, answers
+npm run build      # static site in dist/
+```
+
+## Deploying
+
+It's a static site that uses relative paths, so it works at a domain root or in a sub-folder.
+
+- **Vercel / Netlify:** import the repository.
+- **GitHub Pages:** in Settings → Pages, publish the `dist/` folder from a workflow or branch. It will run at `/multiplyapp/`.
+
+## License
+
+[MIT](LICENSE)
+
+## Author
+
+**Abdul Manaf Ali** · [@ohenemanaf](https://github.com/ohenemanaf)
